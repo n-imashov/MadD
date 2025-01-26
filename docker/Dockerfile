@@ -1,10 +1,16 @@
 FROM python:3.12
 
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-COPY ./req.txt .
-RUN pip install -r req.txt
+# Копируем только файл с зависимостями
+COPY ./req.txt /app/req.txt
 
-COPY . .
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r req.txt
 
-CMD ["python", "manage.py", "runserver"]
+# Копируем остальной код
+COPY . /app
+
+# Команда по умолчанию
+CMD ["bash", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
